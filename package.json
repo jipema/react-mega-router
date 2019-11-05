@@ -1,0 +1,44 @@
+{
+    "name": "react-mega-router",
+    "version": "1.0.0",
+    "description": "Yet another React router. But this one has multi-columns and animations built-in.",
+    "main": "dist/index.js",
+    "files": [
+        "dist/*"
+    ],
+    "author": "Jipema",
+    "license": "MIT",
+    "keywords": [
+        "react",
+        "hooks",
+        "router",
+        "nested",
+        "columns",
+        "side-by-side",
+        "animations"
+    ],
+    "repository": "https://github.com/jipema/react-mega-router",
+    "scripts": {
+        "prepublishOnly": "rm -rf dist && mkdir dist && babel ./src --out-dir ./dist -s inline",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "babel": {
+        "presets": [
+            "@babel/preset-react"
+        ]
+    },
+    "dependencies": {
+        "history": "^4.10.1",
+        "prop-types": "^15.7.2",
+        "url-pattern": "^1.0.3"
+    },
+    "devDependencies": {
+        "@babel/cli": "^7.6.4",
+        "@babel/core": "^7.6.4",
+        "@babel/preset-env": "^7.6.3",
+        "@babel/preset-react": "^7.6.3"
+    },
+    "peerDependencies": {
+        "react": "^16.8.0"
+    }
+}
