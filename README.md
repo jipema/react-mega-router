@@ -4,8 +4,7 @@ Yet another React router. But this one has multi-columns and animations built-in
 
 ## Demo
 
-[Try it](https://9uso1.csb.app/)
-[Play with it](https://codesandbox.io/s/react-mega-router-9uso1)
+[Try it](https://9uso1.csb.app/) / [Play with it](https://codesandbox.io/s/react-mega-router-9uso1)
 
 ## Install
 
