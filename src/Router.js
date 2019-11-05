@@ -180,7 +180,7 @@ function RouterRaw({ routes, onUpdate, onLeave, cols, animate, notFound, router 
 }
 RouterRaw.propTypes = {
    routes: PropTypes.array.isRequired,
-   col: PropTypes.number,
+   cols: PropTypes.number,
    onUpdate: PropTypes.func,
    onLeave: PropTypes.func,
    animate: PropTypes.bool,
