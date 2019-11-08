@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import PropTypes from 'prop-types';
 
-import { HistoryProvider, HistoryContext } from './HistoryProvider';
-import { Route } from './Route';
-import { getMatchingRoutes} from './utils';
+import { HistoryProvider, HistoryContext } from './HistoryProvider';
+import { Route } from './Route';
+import { getMatchingRoutes } from './utils';
 
 /** Automatically wrap HistoryProvider around Router if missing */
 export function Router(props) {
@@ -21,14 +21,14 @@ export default Router;
 Router.propTypes = {
    routes: PropTypes.array.isRequired,
    cols: PropTypes.number,
-   onUpdate: PropTypes.func,
+   onEnter: PropTypes.func,
    onLeave: PropTypes.func,
    animate: PropTypes.bool,
    notFound: PropTypes.node,
-   historyParams: PropTypes.object,
+   historyParams: PropTypes.object
 };
 
-function RouterRaw({ routes, onUpdate, onLeave, cols, animate, notFound, router }) {
+function RouterRaw({ routes, onEnter, onLeave, cols, animate, notFound, router }) {
    const { history } = useContext(HistoryContext);
    const historyPath = history && history.location && history.location.pathname;
    const [path, setPath] = useState(historyPath);
@@ -48,7 +48,11 @@ function RouterRaw({ routes, onUpdate, onLeave, cols, animate, notFound, router 
 
             //for functions, await result
          } else if (typeof onLeaveHandler === typeof Router) {
-            confirm = await onLeaveHandler(history.stack[0], previousMatches && previousMatches.current && previousMatches.current[0], history.stack);
+            confirm = await onLeaveHandler(previousMatches && previousMatches.current && previousMatches.current[0], history);
+
+            if (typeof confirm === typeof 's') {
+               confirm = window && window.confirm ? window.confirm(confirm) : true;
+            }
 
             //else use raw value
          } else {
@@ -67,7 +71,15 @@ function RouterRaw({ routes, onUpdate, onLeave, cols, animate, notFound, router 
          history.stack = history.stack.slice(0, 99);
          setPath(location.pathname);
 
-         if (typeof onUpdate === typeof useEffect) onUpdate(location, action, history.stack);
+         const currentRoute = previousMatches && previousMatches.current && previousMatches.current[0];
+
+         if (typeof onEnter === typeof useEffect) {
+            onEnter(currentRoute, history, action, location);
+         }
+
+         if (currentRoute && typeof currentRoute.onEnter === typeof useEffect) {
+            currentRoute.onEnter(currentRoute, history, action, location);
+         }
       };
       const unlisten = history.listen(onHistoryUpdate);
 
@@ -82,7 +94,7 @@ function RouterRaw({ routes, onUpdate, onLeave, cols, animate, notFound, router 
 
    //history is required to keep going
    if (!history || !history.location) return null;
-   
+
    const matchesRaw = getMatchingRoutes(routes, path) || [];
    const lastRouteDepth = matchesRaw && matchesRaw[0] && matchesRaw[0].depth;
    const matches = matchesRaw.slice(0, lastRouteDepth || cols || 1).reverse();
@@ -97,7 +109,7 @@ function RouterRaw({ routes, onUpdate, onLeave, cols, animate, notFound, router 
          return notFound;
       }
       return (
-         <Route className="not-found" animation="navigate" direction="same" col={0} cols={1} path={path} >
+         <Route className="not-found" animation="navigate" direction="same" col={0} cols={1} path={path}>
             {notFound}
          </Route>
       );
@@ -168,7 +180,7 @@ function RouterRaw({ routes, onUpdate, onLeave, cols, animate, notFound, router 
             animation={animationType}
             direction={animationDirection}
             animationDuration={route.animationDuration}
-            animationInitDuration={route.animationInitDuration}            
+            animationInitDuration={route.animationInitDuration}
          >
             {ComponentInstance}
          </Route>
@@ -181,7 +193,7 @@ function RouterRaw({ routes, onUpdate, onLeave, cols, animate, notFound, router 
 RouterRaw.propTypes = {
    routes: PropTypes.array.isRequired,
    cols: PropTypes.number,
-   onUpdate: PropTypes.func,
+   onEnter: PropTypes.func,
    onLeave: PropTypes.func,
    animate: PropTypes.bool,
    notFound: PropTypes.node

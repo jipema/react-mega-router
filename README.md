@@ -1,10 +1,18 @@
 # React Mega Router 🛣🛣🛣
 
-Yet another React router. But this one has multi-columns and animations built-in.
+Yet another React router. But this one has multi-columns, hooks and animations, built-in.
+
+## Features
+
+✅ Multi-columns _(`cols` prop)_
+✅ Route leave async hook _(`onLeave` prop or `onLeave` route attribute)_
+✅ Browser, Hash or Memory [history](https://www.npmjs.com/package/history) _(`memory`, `hash` and `historyParams` props)_
+✅ Routes animation classNames: `will-enter`, `entering`, `direction-forward`, `direction-backward`, `direction-same`, `col-1`, `col-2`, `cols-2`, ...
 
 ## Demo
 
-[Try it](https://9uso1.csb.app/) / [Play with it](https://codesandbox.io/s/react-mega-router-9uso1)
+👀 [Try it](https://9uso1.csb.app/)\
+🛠 [Grill it](https://codesandbox.io/s/react-mega-router-9uso1)
 
 ## Install
 
@@ -30,6 +38,7 @@ const demoRoutes = [
    {
       path: '/foo',
       component: PageFoo,
+      onLeave: (route, history) => console.log('Should I block the navigation?'),
       routes: [
          {
             path: '/foo/:bar',
@@ -50,14 +59,14 @@ const App = (props) => {
 
 ## Proptypes
 
-| Property | Type          | Required | Description                                                                                  |
-| :------- | :------------ | :------- | :------------------------------------------------------------------------------------------- |
-| routes   | array         | true     | Routes list [{ path: '/foo/bar', component: MyComponent, routes: [], anyOtherProps: true }]  |
-| cols     | integer       | false    | Number of visible columns (typically 2)                                                      |
-| onUpdate | function      | false    | Triggered on route change (location, action, stack)=>{}                                      |
-| onLeave  | function      | false    | Triggered on route leave (async), returns false to deny navigation                           |
-| animate  | boolean       | false    | False to disable animation className (direction-forward, direction-backward, direction-same) |
-| notFound | React Element | false    | Not found route fallback                                                                     |
+| Property | Type          | Required | Description                                                                                   |
+| :------- | :------------ | :------- | :-------------------------------------------------------------------------------------------- |
+| routes   | array         | true     | Routes list `[{ path: '/foo/bar', component: MyComponent, routes: [], anyOtherProps: true }]` |
+| cols     | integer       | false    | Number of visible columns                                                                     |
+| onEnter  | function      | false    | Triggered on route enter `(route, history, actionlocation, action, )=>{}`                     |
+| onLeave  | function      | false    | Triggered on route leave `async (route, history)=>{}`, returns false to deny navigation       |
+| animate  | boolean       | false    | False to disable animation classNames                                                         |
+| notFound | React Element | false    | Not found route fallback                                                                      |
 
 ## Props passed to each visible route components
 
@@ -69,10 +78,6 @@ const App = (props) => {
 | path       | string  | Current path               |
 | router     | object  | Router props               |
 | {...route} | -       | Any other route attributes |
-
-## Animations
-
-Each route will be passed animation classNames, so you can make 'em look good: `will-enter`, `entering`, `direction-forward`, `direction-backward`, `direction-same`, `col-1`, `col-2`, `cols-2`, ...
 
 ## Advanced Usage: external navigation Links
 
