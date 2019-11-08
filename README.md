@@ -4,10 +4,10 @@ Yet another React router. But this one has multi-columns, hooks and animations, 
 
 ## Features
 
-✅ Multi-columns _(`cols` prop)_
-✅ Route leave async hook _(`onLeave` prop or `onLeave` route attribute)_
-✅ Browser, Hash or Memory [history](https://www.npmjs.com/package/history) _(`memory`, `hash` and `historyParams` props)_
-✅ Routes animation classNames: `will-enter`, `entering`, `direction-forward`, `direction-backward`, `direction-same`, `col-1`, `col-2`, `cols-2`, ...
+✅ Multi-columns _(`cols` prop)_ \
+✅ Route leave async hook _(`onLeave` prop or `onLeave` route attribute)_ \
+✅ Browser, Hash or Memory [history](https://www.npmjs.com/package/history) _(`memory`, `hash` and `historyParams` props)_ \
+✅ Routes animation classNames: `will-enter`, `entering`, `direction-forward`, `direction-backward`, `direction-same`, `col-1`, `col-2`, `cols-2`, ... \
 
 ## Demo
 
