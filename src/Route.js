@@ -27,7 +27,7 @@ export const Route = React.memo(function({ children, path, url, col, cols, direc
    let cl = 'route col-' + (col || 0) + ' cols-' + (cols || 1);
    if (className) cl += ' ' + className;
    if (animation !== false) cl += ' animation-' + (animation || 'default');
-   if (direction) cl += ' direction-' + direction;
+   if (animation !== false && direction) cl += ' direction-' + direction;
 
    if (animate && animate !== 'entered') cl += ' ' + animate;
    else if (!animate && animate !== false) cl += ' will-enter';
@@ -41,7 +41,7 @@ Route.propTypes = {
    url: PropTypes.string,
    cols: PropTypes.number,
    direction: PropTypes.string,
-   animation: PropTypes.string,
+   animation: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
    className: PropTypes.string,
    animationDuration: PropTypes.number,
    animationInitDuration: PropTypes.number

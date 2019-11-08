@@ -28,11 +28,13 @@ Router.propTypes = {
    historyParams: PropTypes.object
 };
 
-function RouterRaw({ routes, onEnter, onLeave, cols, animate, notFound, router }) {
+function RouterRaw({ routes, onEnter, onLeave, cols, path, animate, notFound, router }) {
    const { history } = useContext(HistoryContext);
    const historyPath = history && history.location && history.location.pathname;
-   const [path, setPath] = useState(historyPath);
+   const [currentPath, setCurrentPath] = useState(historyPath);
    const previousMatches = useRef([]);
+
+   const forcedPath = path || currentPath;
 
    useEffect(() => {
       if (!history || !history.listen) return;
@@ -69,7 +71,7 @@ function RouterRaw({ routes, onEnter, onLeave, cols, animate, notFound, router }
          if (!location || !location.pathname) return;
          history.stack.unshift(location);
          history.stack = history.stack.slice(0, 99);
-         setPath(location.pathname);
+         setCurrentPath(location.pathname);
 
          const currentRoute = previousMatches && previousMatches.current && previousMatches.current[0];
 
@@ -95,7 +97,7 @@ function RouterRaw({ routes, onEnter, onLeave, cols, animate, notFound, router }
    //history is required to keep going
    if (!history || !history.location) return null;
 
-   const matchesRaw = getMatchingRoutes(routes, path) || [];
+   const matchesRaw = getMatchingRoutes(routes, forcedPath) || [];
    const lastRouteDepth = matchesRaw && matchesRaw[0] && matchesRaw[0].depth;
    const matches = matchesRaw.slice(0, lastRouteDepth || cols || 1).reverse();
 
@@ -109,7 +111,7 @@ function RouterRaw({ routes, onEnter, onLeave, cols, animate, notFound, router }
          return notFound;
       }
       return (
-         <Route className="not-found" animation="navigate" direction="same" col={0} cols={1} path={path}>
+         <Route className="not-found" animation="navigate" direction="same" col={0} cols={1} path={forcedPath}>
             {notFound}
          </Route>
       );
