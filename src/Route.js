@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-export const Route = React.memo(function({ children, path, url, col, cols, direction, animation, className, animationDuration, animationInitDuration }) {
+export const Route = React.memo(function({ children, path, url, col, cols, direction, animation, className, animationDuration, animationInitDuration, animationInitDelay }) {
    const [animate, setAnimate] = useState();
    const animTO = useRef();
    useEffect(() => {
+      let additionalColsDelay = 0;
+      if((direction==='same' || direction===undefined) && cols>1) additionalColsDelay = (cols-col-1)*animationInitDelay;
       setAnimate(undefined);
       if (animTO && animTO.current) animTO.current = clearTimeout(animTO.current);
       animTO.current = setTimeout(() => {
@@ -15,14 +17,14 @@ export const Route = React.memo(function({ children, path, url, col, cols, direc
             animTO.current = undefined;
             setAnimate('entered');
          }, animationDuration);
-      }, animationInitDuration);
+      }, animationInitDuration + additionalColsDelay);
 
       return () => {
          if (animTO && animTO.current) {
             animTO.current = clearTimeout(animTO.current);
          }
       };
-   }, [direction, animation, url, path, animationDuration, animationInitDuration]);
+   }, [direction, animation, url, path, animationDuration, animationInitDuration]); // eslint-disable-line react-hooks/exhaustive-deps
 
    let cl = 'route col-' + (col || 0) + ' cols-' + (cols || 1);
    if (className) cl += ' ' + className;
@@ -44,9 +46,11 @@ Route.propTypes = {
    animation: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
    className: PropTypes.string,
    animationDuration: PropTypes.number,
-   animationInitDuration: PropTypes.number
+   animationInitDuration: PropTypes.number,
+   animationInitDelay: PropTypes.number
 };
 Route.defaultProps = {
    animationDuration: 750,
-   animationInitDuration: 50
+   animationInitDuration: 25,
+   animationInitDelay: 55,
 };

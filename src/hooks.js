@@ -12,7 +12,7 @@ export function useRouteOnLeave(hookAction, routerHistory) {
       };
    });
 }
-export function usePathIsActive(path, routerHistory, exact) {
+export function useActivePath(path, routerHistory, exact) {
    const [active, setActive] = useState(false);
 
    useEffect(() => {
@@ -28,9 +28,9 @@ export function usePathIsActive(path, routerHistory, exact) {
 
       //unlisten on unmout
       return () => {
-         if (typeof unlisten === typeof usePathIsActive) return unlisten();
+         if (typeof unlisten === typeof useActivePath) return unlisten();
       };
-   }, [path, routerHistory]);
+   }, [path, routerHistory]); // eslint-disable-line react-hooks/exhaustive-deps
 
    return active;
 }

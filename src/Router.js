@@ -28,11 +28,12 @@ Router.propTypes = {
    historyParams: PropTypes.object
 };
 
-function RouterRaw({ routes, onEnter, onLeave, cols, path, animate, notFound, router }) {
-   const { history } = useContext(HistoryContext);
+function RouterRaw({ history: historyProp , routes, routesExtraProps, onEnter, onLeave, cols, path, animate, notFound, router }) {
+   const { history: historyContext } = useContext(HistoryContext);
+   const history = historyProp || historyContext;
    const historyPath = history && history.location && history.location.pathname;
    const [currentPath, setCurrentPath] = useState(historyPath);
-   const previousMatches = useRef([]);
+   const previousMatches = useRef([]); 
 
    const forcedPath = path || currentPath;
 
@@ -92,14 +93,14 @@ function RouterRaw({ routes, onEnter, onLeave, cols, path, animate, notFound, ro
          console.log('[router] unmount', unlisten, history);
          if (typeof unlisten === typeof useEffect) unlisten();
       };
-   }, [history]);
+   }, [history]); // eslint-disable-line react-hooks/exhaustive-deps
 
    //history is required to keep going
    if (!history || !history.location) return null;
 
    const matchesRaw = getMatchingRoutes(routes, forcedPath) || [];
-   const lastRouteDepth = matchesRaw && matchesRaw[0] && matchesRaw[0].depth;
-   const matches = matchesRaw.slice(0, lastRouteDepth || cols || 1).reverse();
+   const lastRouteCols = matchesRaw && matchesRaw[0] && matchesRaw[0].cols;
+   const matches = matchesRaw.slice(0, lastRouteCols || cols || 1).reverse();
 
    //not found
    if (!matches || !matches.length) {
@@ -152,18 +153,23 @@ function RouterRaw({ routes, onEnter, onLeave, cols, path, animate, notFound, ro
    }
 
    //build jsx
-   const routeList = [];
+   const validMatches = [];
    for (let i in matches) {
-      const route = matches[i];
+      if (!matches[i] || !matches[i].path || !matches[i].component) continue;
+      validMatches.push(matches[i]);
+   }
+   const routeList = [];
+   for (let i in validMatches) {
+      const route = validMatches[i];
       const props = { ...route };
       delete props.component;
 
       const RouteComponent = route && route.path && route.component;
       if (!RouteComponent) continue;
 
-      const col = matches.length - 1 - i;
+      const col = validMatches.length - 1 - i;
 
-      const ComponentInstance = <RouteComponent key={route.id || route.path} {...props} col={col} cols={matches.length} history={history} router={router} />;
+      const ComponentInstance = <RouteComponent key={route.id || route.path} {...props} col={col} cols={validMatches.length} history={history} router={router} {...routesExtraProps} />;
       if (animate === false) {
          routeList.push(ComponentInstance);
          break;
@@ -177,7 +183,7 @@ function RouterRaw({ routes, onEnter, onLeave, cols, path, animate, notFound, ro
             path={route.path}
             url={route.url}
             col={col}
-            cols={matches.length}
+            cols={validMatches.length}
             className={route.className}
             animation={animationType}
             direction={animationDirection}
@@ -187,6 +193,8 @@ function RouterRaw({ routes, onEnter, onLeave, cols, path, animate, notFound, ro
             {ComponentInstance}
          </Route>
       );
+
+      if (route.cols && routeList >= route.cols) break;
    }
    previousMatches.current = matchesRaw;
 

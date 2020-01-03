@@ -4,13 +4,14 @@ import { createBrowserHistory, createHashHistory, createMemoryHistory } from 'hi
 
 export const HistoryContext = React.createContext([]);
 
-export function HistoryProvider({ children, hash, memory, options, basePath, getUserConfirmation }) {
+export function HistoryProvider({ history: historyProp, children, hash, memory, options, basePath, getUserConfirmation }) {
    const [history, setHistory] = useState({});
    const historyRef = useRef();
 
    useEffect(() => {
       let createHistory = createBrowserHistory;
-      if (hash) createHistory = createHashHistory;
+      if (historyProp) createHistory = () => historyProp;
+      else if (hash) createHistory = createHashHistory;
       else if (memory) createHistory = createMemoryHistory;
 
       const historyParams = {
@@ -31,7 +32,7 @@ export function HistoryProvider({ children, hash, memory, options, basePath, get
 
       historyRef.current = history;
       setHistory(history);
-   }, [basePath, getUserConfirmation, hash, memory, options]);
+   }, [basePath, getUserConfirmation, hash, memory, options]); // eslint-disable-line react-hooks/exhaustive-deps
 
    if (!history) return null;
    return <HistoryContext.Provider value={{ history, basePath }}>{children}</HistoryContext.Provider>;

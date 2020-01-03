@@ -1,38 +1,52 @@
 import React, { useContext } from 'react';
 import PropTypes from 'prop-types';
-import { HistoryContext } from './HistoryProvider';
-import { usePathIsActive } from './hooks';
+import { HistoryContext } from './HistoryProvider';
+import { useActivePath } from './hooks';
 
 export function Link(props) {
    const { history, basePath } = useContext(HistoryContext);
    const linkProps = { ...props };
-   let href = String(props.href||'');
+   let href = String(props.href || props.to || '');
    if (history && href) {
       if (basePath) href = basePath + (basePath[basePath.length - 1] !== '/' && href[0] !== '/' ? '/' : '') + props.href;
    }
+   delete linkProps.activeClassName;
+   delete linkProps.strict;
+   delete linkProps.to;
+   delete linkProps.tag;
+   linkProps.className = (linkProps.className || '') + (linkProps.className ? ' ' : '') + 'router-link';
 
-   const onClick = (e) => {
+   const onClick = e => {
       if (!history || props.target) return;
       if (e.preventDefault) e.preventDefault();
-      history.push(props.href);
+      history.push(href);
    };
-   const isActive = usePathIsActive(href, history);
+   const isActive = useActivePath(href, history, props.strict);
    const activeClass = props.activeClassName || 'active';
 
-   if (isActive) {
-      linkProps.className = !props.className ? activeClass : props.className + ' ' + activeClass;
+   if (isActive && props.activeClassName!==false) {
+      linkProps.className += ' ' + activeClass;
+   }
+
+   //custom tag type
+   const TagType = props.tag || (props.href && 'a') || 'div';
+   if (TagType && TagType !== 'a') {
+      delete linkProps.href;
+      delete linkProps.target;
    }
 
    return (
-      <a {...linkProps} href={href} onClick={onClick}>
+      <TagType {...linkProps} onClick={onClick}>
          {props.children}
-      </a>
+      </TagType>
    );
 }
 Link.propTypes = {
-   href: PropTypes.string.isRequired,
+   href: PropTypes.string,
+   to: PropTypes.string,
    target: PropTypes.string,
    onClick: PropTypes.func,
    className: PropTypes.string,
-   activeClassName: PropTypes.string
+   activeClassName: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+   strict: PropTypes.bool
 };

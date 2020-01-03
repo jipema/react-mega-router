@@ -1,7 +1,7 @@
 import { Router } from './Router';
-import { HistoryProvider } from './HistoryProvider';
+import { HistoryProvider, HistoryContext } from './HistoryProvider';
 import { Link } from './Link';
-import { useRouteOnLeave, usePathIsActive, pathIsActive } from './hooks';
+import { useRouteOnLeave, useActivePath, pathIsActive } from './hooks';
 
-export { HistoryProvider, Router, Link, useRouteOnLeave, usePathIsActive, pathIsActive };
+export { HistoryProvider, HistoryContext, Router, Link, useRouteOnLeave, useActivePath, pathIsActive };
 export default Router;
