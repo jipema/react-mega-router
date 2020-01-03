@@ -20,7 +20,7 @@
     "repository": "https://github.com/jipema/react-mega-router",
     "scripts": {
         "prepublishOnly": "rm -rf dist && mkdir dist && babel ./src --out-dir ./dist -s inline",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"No test specified yet, sorry.\" && exit 0"
     },
     "babel": {
         "presets": [
