@@ -28,12 +28,12 @@ Router.propTypes = {
    historyParams: PropTypes.object
 };
 
-function RouterRaw({ history: historyProp , routes, routesExtraProps, onEnter, onLeave, cols, path, animate, notFound, router }) {
+function RouterRaw({ history: historyProp, routes, routesExtraProps, onEnter, onLeave, cols, path, animate, notFound, router }) {
    const { history: historyContext } = useContext(HistoryContext);
    const history = historyProp || historyContext;
    const historyPath = history && history.location && history.location.pathname;
    const [currentPath, setCurrentPath] = useState(historyPath);
-   const previousMatches = useRef([]); 
+   const previousMatches = useRef([]);
 
    const forcedPath = path || currentPath;
 
@@ -99,7 +99,10 @@ function RouterRaw({ history: historyProp , routes, routesExtraProps, onEnter, o
    if (!history || !history.location) return null;
 
    const matchesRaw = getMatchingRoutes(routes, forcedPath) || [];
-   const lastRouteCols = matchesRaw && matchesRaw[0] && matchesRaw[0].cols;
+   let lastRouteCols = matchesRaw && matchesRaw[0] && matchesRaw[0].cols;
+   if (typeof lastRouteCols === typeof RouterRaw) {
+      lastRouteCols = lastRouteCols(routesExtraProps, cols, path, router);
+   }
    const matches = matchesRaw.slice(0, lastRouteCols || cols || 1).reverse();
 
    //not found
