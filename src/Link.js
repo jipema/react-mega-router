@@ -6,7 +6,7 @@ import { useActivePath } from './hooks';
 export function Link(props) {
    const { history, basePath } = useContext(HistoryContext);
    const linkProps = { ...props };
-   let href = String(props.href || props.to || '');
+   let href = String(props.href || props.to || props.path || '');
    if (history && href) {
       if (basePath) href = basePath + (basePath[basePath.length - 1] !== '/' && href[0] !== '/' ? '/' : '') + props.href;
    }
