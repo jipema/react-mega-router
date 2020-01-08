@@ -101,7 +101,7 @@ function RouterRaw({ history: historyProp, routes, routesExtraProps, onEnter, on
    const matchesRaw = getMatchingRoutes(routes, forcedPath) || [];
    let lastRouteCols = matchesRaw && matchesRaw[0] && matchesRaw[0].cols;
    if (typeof lastRouteCols === typeof RouterRaw) {
-      lastRouteCols = lastRouteCols(routesExtraProps, cols, path, router);
+      lastRouteCols = lastRouteCols(routesExtraProps, cols, forcedPath, router, history);
    }
    const matches = matchesRaw.slice(0, lastRouteCols || cols || 1).reverse();
 
