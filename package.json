@@ -1,6 +1,6 @@
 {
     "name": "react-mega-router",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "description": "Yet another React router. But this one has multi-columns and animations built-in.",
     "main": "dist/index.js",
     "files": [
